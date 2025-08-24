@@ -1,0 +1,3 @@
+instance_name,instance_type,ami,subnet_id,key_name,security_group_ids,environment,owner
+web1,t3.micro,ami-12345678,subnet-1111,my-key,"[""sg-aaa111"",""sg-bbb222""]",dev,gouri
+db1,t3.medium,ami-87654321,subnet-2222,my-key,"[""sg-ccc333""]",prod,devops

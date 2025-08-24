@@ -1,0 +1,54 @@
+pipeline {
+    agent any
+
+    environment {
+        AWS_DEFAULT_REGION = "us-east-1"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/your-org/terraform-infra.git'
+            }
+        }
+
+        stage('Install Python Dependencies') {
+            steps {
+                sh '''
+                pip3 install pandas --user
+                '''
+            }
+        }
+
+        stage('Generate Terraform Code') {
+            steps {
+                sh 'python3 generate_tf.py'
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                sh 'terraform init'
+            }
+        }
+
+        stage('Terraform Validate') {
+            steps {
+                sh 'terraform validate'
+            }
+        }
+
+        stage('Terraform Plan') {
+            steps {
+                sh 'terraform plan -out=tfplan'
+            }
+        }
+
+        stage('Terraform Apply') {
+            steps {
+                input(message: "Apply Terraform changes?", ok: "Apply")
+                sh 'terraform apply -auto-approve tfplan'
+            }
+        }
+    }
+}
